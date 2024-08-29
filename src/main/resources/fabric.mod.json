@@ -13,7 +13,7 @@
     "sources": "https://github.com/calmilamsy/Glass-Networking"
   },
 
-  "license": "CC0-1.0",
+  "license": "MIT",
   "icon": "assets/glassnetworking/icon.png",
 
   "environment": "*",
