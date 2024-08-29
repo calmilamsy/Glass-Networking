@@ -15,7 +15,7 @@ version = project.properties["mod_version"] as String
 group = project.properties["maven_group"] as String
 
 loom {
-//	accessWidenerPath = file("src/main/resources/glassnetworking.accesswidener")
+	accessWidenerPath = file("src/main/resources/glassnetworking.accesswidener")
 
 	runs {
 		register("testClient") {
@@ -63,6 +63,7 @@ dependencies {
 
 	// adds some useful annotations for miscellaneous uses. does not add any dependencies, though people without the lib will be missing some useful context hints.
 	implementation("org.jetbrains:annotations:23.0.0")
+	implementation("com.google.guava:guava:33.2.1-jre")
 }
 
 configurations.all {

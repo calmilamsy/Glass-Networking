@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
-  "id": "glassnetworking",
+  "id": "glassnetworkingtest",
   "version": "${version}",
 
-  "name": "Glass Networking",
-  "description": "Aims to make packet handling without StationAPI 1000% less painful by abusing the poor NBT system. Probably not the best way to do it.",
+  "name": "Glass Networking Test",
+  "description": "Testmod.",
   "authors": [
     "calmilamsy"
   ],
@@ -18,12 +18,12 @@
 
   "environment": "*",
   "entrypoints": {
-    "main": [
-      "net.glasslauncher.mods.networking.GlassNetworking"
+    "glassnetworking": [
+      "net.glasslauncher.mods.networking.test.PacketRegister"
     ]
   },
   "mixins": [
-    "glassnetworking.mixins.json"
+    "glassnetworkingtest.mixins.json"
   ],
 
   "depends": {
