@@ -1,5 +1,8 @@
 package net.glasslauncher.mods.networking.mixin;
 
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import com.llamalad7.mixinextras.sugar.Local;
 import net.glasslauncher.mods.networking.GlassNetworking;
 import net.glasslauncher.mods.networking.GlassPacket;
 import net.minecraft.network.packet.Packet;
@@ -7,7 +10,6 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
@@ -63,15 +65,15 @@ abstract class PacketMixin {
             writeString(idPacket.getFullId(), out);
     }
 
-    @Redirect(
+    @WrapOperation(
             method = "read(Ljava/io/DataInputStream;Z)Lnet/minecraft/network/packet/Packet;",
             at = @At(
                     value = "INVOKE",
                     target = "Lnet/minecraft/network/packet/Packet;create(I)Lnet/minecraft/network/packet/Packet;"
             )
     )
-    private static Packet glassnetworking_ifIdentifiable(int id, DataInputStream in, boolean server) throws IOException {
-        if (id == GlassNetworking.PACKET_ID) {
+    private static Packet glassnetworking_ifIdentifiable(int rawId, Operation<Packet> original, @Local(argsOnly = true) DataInputStream in, @Local(argsOnly = true) boolean server) throws IOException {
+        if (rawId == GlassNetworking.PACKET_ID) {
             String identifier = readString(in, Short.MAX_VALUE);
             if (
                     server && !GlassNetworking.isServerPacket(identifier) ||
@@ -83,6 +85,6 @@ abstract class PacketMixin {
             }
             return new GlassPacket();
         }
-        return create(id);
+        return create(rawId);
     }
 }
