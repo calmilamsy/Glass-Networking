@@ -31,15 +31,9 @@ abstract class PacketMixin {
         return null;
     }
 
-    @Shadow
-    public static Packet create(int i) {
-        return null;
-    }
-
     @Inject(method = "<clinit>", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/packet/Packet;register(IZZLjava/lang/Class;)V", ordinal = 56, shift = At.Shift.AFTER))
     private static void glassnetworking_afterVanillaPackets(CallbackInfo ci) {
         register(GlassNetworking.PACKET_ID, true, true, GlassPacket.class);
-        // Register packets here
     }
 
     @Inject(
@@ -85,6 +79,6 @@ abstract class PacketMixin {
             }
             return new GlassPacket();
         }
-        return create(rawId);
+        return original.call(rawId);
     }
 }

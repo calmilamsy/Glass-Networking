@@ -16,6 +16,7 @@ import net.minecraft.nbt.NbtElement;
 import net.minecraft.network.NetworkHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.io.*;
 import java.util.*;
@@ -25,6 +26,8 @@ public class GlassNetworking implements ModInitializer {
     public static final long MASK = Hashing.sipHash24().hashUnencodedChars("glassnetworking").asLong();
     public static final int PACKET_ID = 253; // StAPI uses 254, and 255 is the disconnect packet
     public static final Logger LOGGER = LogManager.getLogger("GlassNetworking|Mod");
+
+    private static boolean serverHasNetworking = false;
 
     private static final PacketHelperImpl PACKET_HELPER = FabricLoader.getInstance().getEnvironmentType().equals(EnvType.CLIENT) ? new PacketHelperClientImpl() : new PacketHelperServerImpl();
 
@@ -82,7 +85,14 @@ public class GlassNetworking implements ModInitializer {
             return false;
         }
 
-        return ((GlassNetworkHandler) handler).glass_Networking$hasGlassNetworking();
+        return serverHasNetworking;
+    }
+
+    @Environment(EnvType.CLIENT)
+    @ApiStatus.Internal
+    @Deprecated
+    public static void setServerHasNetworking(boolean hasNetworking) {
+        serverHasNetworking = hasNetworking;
     }
 
     /**

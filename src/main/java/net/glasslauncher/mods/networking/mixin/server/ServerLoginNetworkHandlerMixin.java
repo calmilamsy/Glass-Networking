@@ -1,42 +1,49 @@
 package net.glasslauncher.mods.networking.mixin.server;
 
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import com.llamalad7.mixinextras.sugar.Local;
 import net.glasslauncher.mods.networking.GlassNetworkHandler;
-import net.glasslauncher.mods.networking.GlassNetworking;
-import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.network.packet.handshake.HandshakePacket;
 import net.minecraft.network.packet.login.LoginHelloPacket;
 import net.minecraft.server.network.ServerLoginNetworkHandler;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
-import net.minecraft.util.math.Vec3i;
-import net.minecraft.world.ServerWorld;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
+
+import java.util.*;
 
 @Mixin(ServerLoginNetworkHandler.class)
 public class ServerLoginNetworkHandlerMixin {
     @Inject(
-            method = "accept",
+            method = "onHandshake",
             at = @At("HEAD")
     )
-    private void glassnetworking_handleLogin(LoginHelloPacket arg, CallbackInfo ci) {
-        if ((arg.worldSeed & GlassNetworking.MASK) == GlassNetworking.MASK) {
+    private void glassnetworking_handleLogin(HandshakePacket par1, CallbackInfo ci) {
+        if (Arrays.asList(par1.name.split(";")).contains("glassnetworking")) {
             ((GlassNetworkHandler) this).glass_Networking$setHasGlassNetworking();
         }
+    }
+
+    @WrapOperation(method = "onHandshake", at = @At(value = "NEW", target = "(Ljava/lang/String;)Lnet/minecraft/network/packet/handshake/HandshakePacket;"))
+    private HandshakePacket glassnetworking_tellThemIMod(String s, Operation<HandshakePacket> original, @Local(argsOnly = true) HandshakePacket handshakePacket) {
+        if (Arrays.asList(handshakePacket.name.split(";")).contains("glassnetworking")) {
+            s += ";glassnetworking;";
+        }
+        return original.call(s);
     }
 
     @Inject(
             method = "accept",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/server/network/ServerPlayNetworkHandler;<init>(Lnet/minecraft/server/MinecraftServer;Lnet/minecraft/network/Connection;Lnet/minecraft/entity/player/ServerPlayerEntity;)V",
-                    shift = At.Shift.BY,
-                    by = 2
-            ),
-            locals = LocalCapture.CAPTURE_FAILHARD
+                    target = "Lnet/minecraft/network/packet/login/LoginHelloPacket;<init>(Ljava/lang/String;IJB)V",
+                    shift = At.Shift.AFTER
+            )
     )
-    private void stationapi_checkModded(LoginHelloPacket arg, CallbackInfo ci, ServerPlayerEntity var2, ServerWorld var3, Vec3i var4, ServerPlayNetworkHandler var5) {
+    private void stationapi_checkModded(LoginHelloPacket arg, CallbackInfo ci, @Local(ordinal = 0) ServerPlayNetworkHandler var5) {
         GlassNetworkHandler moddedPacketHandler = ((GlassNetworkHandler) this);
         if (moddedPacketHandler.glass_Networking$hasGlassNetworking()) {
             ((GlassNetworkHandler) var5).glass_Networking$setHasGlassNetworking();
