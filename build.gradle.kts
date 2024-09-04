@@ -64,6 +64,9 @@ dependencies {
 	// adds some useful annotations for miscellaneous uses. does not add any dependencies, though people without the lib will be missing some useful context hints.
 	implementation("org.jetbrains:annotations:23.0.0")
 	implementation("com.google.guava:guava:33.2.1-jre")
+
+	// Don't include stapi in dependencies
+	modLocalRuntime("net.modificationstation:StationAPI:2.0-alpha.2.2")
 }
 
 configurations.all {
