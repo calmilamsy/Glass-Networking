@@ -1,6 +1,7 @@
 package net.glasslauncher.mods.networking;
 
 import lombok.Getter;
+import net.glasslauncher.mods.networking.mixin.accessor.NbtCompoundAccessor;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.NetworkHandler;
 import net.minecraft.network.packet.Packet;
@@ -63,7 +64,7 @@ public class GlassPacket extends Packet {
     @Override
     public void read(DataInputStream stream) {
         nbt = new NbtCompound();
-        nbt.read(stream);
+        ((NbtCompoundAccessor)nbt).invokeRead(stream);
         packetId = nbt.getString("glassnetworking:packetId");
         modId = nbt.getString("glassnetworking:modId");
     }

@@ -6,7 +6,8 @@
   "mixins": [
     "HandshakePacketMixin",
     "PacketHandlerMixin",
-    "PacketMixin"
+    "PacketMixin",
+    "accessor.NbtCompoundAccessor"
   ],
   "server": [
     "server.ServerLoginNetworkHandlerMixin"
