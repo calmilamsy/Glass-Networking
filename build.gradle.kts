@@ -2,8 +2,8 @@ import java.net.URI
 
 plugins {
 	id("maven-publish")
-	id("fabric-loom") version "1.7.2"
-	id("babric-loom-extension") version "1.7.3"
+	id("fabric-loom") version "1.9.2"
+	id("babric-loom-extension") version "1.9.3"
 }
 
 //noinspection GroovyUnusedAssignment
@@ -65,13 +65,8 @@ dependencies {
 	implementation("org.jetbrains:annotations:23.0.0")
 	implementation("com.google.guava:guava:33.2.1-jre")
 
-	// Don't include stapi in dependencies
-	modLocalRuntime("net.modificationstation:StationAPI:2.0-alpha.2.2")
-}
-
-configurations.all {
-	exclude(group = "org.ow2.asm", module = "asm-debug-all")
-	exclude(group = "org.ow2.asm", module = "asm-all")
+	// Don't include stapi in dependencies, this is to ensure the two play nicely.
+	modLocalRuntime("net.modificationstation:StationAPI:2.0.0-alpha.3")
 }
 
 tasks.withType<ProcessResources> {
