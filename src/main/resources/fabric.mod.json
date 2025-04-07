@@ -17,6 +17,7 @@
   "icon": "assets/glassnetworking/icon.png",
 
   "environment": "*",
+  "accessWidener": "glassnetworking.accesswidener",
   "entrypoints": {
     "main": [
       "net.glasslauncher.mods.networking.GlassNetworking"
