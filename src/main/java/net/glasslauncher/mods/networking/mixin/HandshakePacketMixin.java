@@ -7,7 +7,9 @@ import net.minecraft.network.packet.handshake.HandshakePacket;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Constant;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyConstant;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.io.*;
@@ -17,6 +19,14 @@ import java.util.*;
 public class HandshakePacketMixin {
     @Shadow
     public String name;
+
+    @ModifyConstant(
+            method = "read",
+            constant = @Constant(intValue = 32)
+    )
+    private int glassnetworking_stopClientFromDying(int constant) {
+        return Short.MAX_VALUE;
+    }
 
     @Inject(
             method = "read",
